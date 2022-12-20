@@ -6,6 +6,7 @@
         "imgui",
         "imgui-sfml",
         "fmt",
-        "spdlog"
+      "spdlog",
+      "benchmark"
     ]
 }

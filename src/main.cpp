@@ -1,95 +1,10 @@
 #include <SFML/Graphics.hpp>
 
 #include "optick.h"
+#include "constant.h"
 
-constexpr int width = 1024;
-constexpr int height = 1024;
-constexpr std::size_t size = static_cast<std::size_t>(width) * height;
 
-class Point
-{
-public:
-    constexpr Point() = default;
-    constexpr Point(int x, int y): x(x), y(y){}
-    constexpr explicit Point(std::size_t index): x(static_cast<int>(index%width)), y(static_cast<int>(index/width))
-    {
-        
-    }
 
-    explicit constexpr operator std::size_t() const
-    {
-        return y * width + x;
-    }
-
-    constexpr Point operator+(const Point& p) const
-    {
-        return { p.x + x, p.y + y };
-    }
-    
-    int x = 0;
-    int y = 0;
-};
-
-unsigned char Compute(const std::vector<unsigned char>& previousMap, const Point& pos) noexcept
-{
-    unsigned char nextCell;
-    const auto cell = previousMap[static_cast<std::size_t>(pos)];
-    int count = 0;
-    for (int dx = -1; dx <= 1; ++dx)
-    {
-        for (int dy = -1; dy <= 1; ++dy)
-        {
-            if (dx == 0 && dy == 0)
-                continue;
-            auto delta = Point(dx, dy);
-            if (pos.x + dx < 0)
-            {
-                delta.x += width;
-            }
-            if (pos.y + dy < 0)
-            {
-                delta.y += height;
-            }
-            if (pos.x + dx >= width)
-            {
-                delta.x -= width;
-            }
-            if (pos.y + dy >= height)
-            {
-                delta.y -= height;
-            }
-
-            const auto neighbor = pos + delta;
-            if (previousMap[static_cast<std::size_t>(neighbor)])
-            {
-                ++count;
-            }
-        }
-    }
-    if (!cell)
-    {
-        if (count == 3)
-        {
-            nextCell = 1;
-        }
-        else
-        {
-            nextCell = 0;
-        }
-    }
-    else
-    {
-        if (count < 2 || count > 3)
-        {
-            nextCell = 0;
-        }
-        else
-        {
-            nextCell = 1;
-        }
-    }
-    return nextCell;
-}
 
 
 int main()
@@ -127,7 +42,7 @@ int main()
         }
         {
             OPTICK_EVENT("CPU Computation");
-            #pragma omp parallel for
+            //#pragma omp parallel for
             for (int i = 0; i < size; ++i)
             {
                 const auto pos = Point(i);
