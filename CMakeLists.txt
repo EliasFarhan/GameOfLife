@@ -8,12 +8,12 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (MSVC)
     # warning level 4 and all warnings as errors
-    add_compile_options(/W4 /w14640 /GL /Oy-)
+    add_compile_options(/W4 /w14640 /GL /Oy- /arch:AVX2)
     add_compile_definitions(_USE_MATH_DEFINES)
     add_link_options(/LTCG)
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -flto -fno-omit-frame-pointer)
+    add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -flto -fno-omit-frame-pointer -march=haswell)
     add_link_options(-flto)
 endif()
 

@@ -85,30 +85,7 @@ unsigned char Compute2(const std::vector<unsigned char>& previousMap, const Poin
     };
     for(const auto& delta: deltas)
     {
-#define MODULO
-#ifndef MODULO
-        Point d = delta;
-        //const auto delta = Point((dx+width)%width, (dy+height)%height);
-        if (pos.x + delta.x < 0) [[unlikely]]
-        {
-            d.x += width;
-        }
-        if (pos.y + delta.y < 0) [[unlikely]]
-        {
-            d.y += height;
-        }
-        if (pos.x + delta.x >= width) [[unlikely]]
-        {
-            d.x -= width;
-        }
-        if (pos.y + delta.y >= height) [[unlikely]]
-        {
-            d.y -= height;
-        }
-        const auto neighbor = pos + d;
-#else
         const auto neighbor = Point((pos.x + delta.x + width) % width, (pos.y + delta.y + height) % height);
-#endif
         if (previousMap[static_cast<std::size_t>(neighbor)])
         {
             ++count;

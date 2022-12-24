@@ -41,7 +41,23 @@ int main()
         }
         {
             OPTICK_EVENT("CPU Computation");
-            //#pragma omp parallel for
+//#define PACKED
+#define OPTI
+#ifdef PACKED
+            #pragma omp parallel for
+            for (int i = 0; i < static_cast<int>(size); i += 8)
+            {
+                const auto pos = Point(static_cast<std::size_t>(i));
+                const auto nextCells = ComputeN<8>(previousMap, pos);
+                for (std::size_t dn = 0; dn < 8; ++dn)
+                {
+                    currentMap[i + dn] = nextCells[dn];
+                    colors[i + dn] = nextCells[dn] ? sf::Color::Black : sf::Color::White;
+        }
+    }
+#else
+#ifdef OPTI
+            #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(size); i++)
             {
                 const auto pos = Point(static_cast<std::size_t>(i));
@@ -49,6 +65,16 @@ int main()
                 nextCell = Compute2(previousMap, pos);
                 colors[i] = nextCell ? sf::Color::Black : sf::Color::White;
             }
+#else
+            for (int i = 0; i < static_cast<int>(size); i++)
+            {
+                const auto pos = Point(static_cast<std::size_t>(i));
+                auto& nextCell = currentMap[static_cast<std::size_t>(pos)];
+                nextCell = Compute(previousMap, pos);
+                colors[i] = nextCell ? sf::Color::Black : sf::Color::White;
+            }
+#endif
+#endif
         }
         std::swap(currentMap, previousMap);
         {
