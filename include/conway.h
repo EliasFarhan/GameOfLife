@@ -42,44 +42,30 @@ std::array<unsigned char, N> ComputeN(const std::vector<unsigned char>& previous
         cells[n] = previousMap[static_cast<std::size_t>(pos) + n];
     }
     std::array<int, N> counts{};
+
+    constexpr std::array<Point, 8> deltas
+    {
+        {
+            {-1,-1},
+            {-1,0},
+            {0,-1},
+            {0,1},
+            {1,0},
+            {1,-1},
+            {-1,1},
+            {1,1},
+        }
+    };
+
+    std::array<unsigned char, N> nextCells;
     for (int n = 0; n < N; ++n)
     {
-        for (int dx = -1; dx <= 1; ++dx)
+        for (const auto& delta : deltas)
         {
-            for (int dy = -1; dy <= 1; ++dy)
-            {
-                const auto tmpPos = pos + Point(n, 0);
-                if (dx == 0 && dy == 0) [[unlikely]]
-                    continue;
-                auto delta = Point(dx, dy);
-                if (tmpPos.x + dx < 0) [[unlikely]]
-                {
-                    delta.x += width;
-                }
-                    if (tmpPos.y + dy < 0) [[unlikely]]
-                    {
-                        delta.y += height;
-                    }
-                        if (tmpPos.x + dx >= width) [[unlikely]]
-                        {
-                            delta.x -= width;
-                        }
-                            if (tmpPos.y + dy >= height) [[unlikely]]
-                            {
-                                delta.y -= height;
-                            }
-
-                        const auto neighbor = tmpPos + delta;
-                        if (previousMap[static_cast<std::size_t>(neighbor)])
-                        {
-                            ++counts[n];
-                        }
-            }
+            const auto tmpPos = pos + Point(n, 0);
+            const auto neighbor = Point((tmpPos.x + delta.x + width) % width, (tmpPos.y + delta.y + height) % height);
+            counts[n] += previousMap[static_cast<std::size_t>(neighbor)];
         }
-    }
-    std::array<unsigned char, N> nextCells;
-    for(int n = 0; n < N; ++n)
-    {
         nextCells[n] = (!cells[n] && (counts[n] == 3)) || (cells[n] && (counts[n] >= 2) && (counts[n] <= 3));
     }
     return nextCells;

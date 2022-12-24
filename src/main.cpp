@@ -33,7 +33,6 @@ int main()
     while (window.isOpen())
     {
         OPTICK_FRAME("GameFrame");
-        auto dt = clock.restart();
         sf::Event event{};
         while (window.pollEvent(event))
         {
@@ -43,9 +42,9 @@ int main()
         {
             OPTICK_EVENT("CPU Computation");
             //#pragma omp parallel for
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < static_cast<int>(size); i++)
             {
-                const auto pos = Point(i);
+                const auto pos = Point(static_cast<std::size_t>(i));
                 auto& nextCell = currentMap[static_cast<std::size_t>(pos)];
                 nextCell = Compute2(previousMap, pos);
                 colors[i] = nextCell ? sf::Color::Black : sf::Color::White;
