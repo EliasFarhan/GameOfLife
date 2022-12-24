@@ -1,10 +1,9 @@
+#include <random>
 #include <SFML/Graphics.hpp>
 
 #include "optick.h"
 #include "constant.h"
-
-
-
+#include "conway.h"
 
 
 int main()
@@ -14,13 +13,14 @@ int main()
     sf::Clock clock;
     std::vector<unsigned char> previousMap(size, 0);
     {
+        std::random_device rd;  //Will be used to obtain a seed for the random number engine
+        std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+        std::uniform_int_distribution<> distrib(0, 1);
+
         std::srand(std::time(nullptr));
         for (auto& cell : previousMap)
         {
-            if(std::rand() % 2 == 0)
-            {
-                cell = 1;
-            }
+            cell = distrib(gen);
         }
     }
     std::vector<unsigned char> currentMap(size, 0);
@@ -43,14 +43,12 @@ int main()
         {
             OPTICK_EVENT("CPU Computation");
             //#pragma omp parallel for
-            for (int i = 0; i < size; ++i)
+            for (int i = 0; i < size; i++)
             {
                 const auto pos = Point(i);
                 auto& nextCell = currentMap[static_cast<std::size_t>(pos)];
-                nextCell = Compute(previousMap, pos);
-
+                nextCell = Compute2(previousMap, pos);
                 colors[i] = nextCell ? sf::Color::Black : sf::Color::White;
-
             }
         }
         std::swap(currentMap, previousMap);

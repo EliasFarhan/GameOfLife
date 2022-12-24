@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.18)
-project(RollbackGame)
+project(GameOfLife)
 
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,11 +8,12 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (MSVC)
     # warning level 4 and all warnings as errors
-    add_compile_options(/W4 /w14640)
+    add_compile_options(/W4 /w14640 /GL /Oy-)
     add_compile_definitions(_USE_MATH_DEFINES)
+    add_link_options(/LTCG)
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -flto)
+    add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -flto -fno-omit-frame-pointer)
     add_link_options(-flto)
 endif()
 
