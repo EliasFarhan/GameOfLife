@@ -41,7 +41,7 @@ int main()
         }
         {
             OPTICK_EVENT("CPU Computation");
-//#define PACKED
+#define PACKED
 #define OPTI
 #ifdef PACKED
             #pragma omp parallel for

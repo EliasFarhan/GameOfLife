@@ -2,6 +2,7 @@
 #include "conway.h"
 
 #include <benchmark/benchmark.h>
+#include <ctime>
 
 static void BM_ComputeBranch(benchmark::State& state) {
     std::vector<unsigned char> previousMap(size, 0);
