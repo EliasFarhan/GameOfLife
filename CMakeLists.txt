@@ -33,6 +33,7 @@ target_include_directories(bench PRIVATE include/)
 
 find_package(SDL2 CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 add_executable(gameoflife_gpu src/gpu_main.cpp)
-target_link_libraries(gameoflife_gpu PRIVATE SDL2::SDL2-static GLEW::GLEW)
+target_link_libraries(gameoflife_gpu PRIVATE $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static> GLEW::GLEW fmt::fmt-header-only optick)
 target_include_directories(gameoflife_gpu PRIVATE include/)

@@ -2,9 +2,10 @@
     "name": "gameoflife",
     "version-string": "1.0",
     "dependencies": [
-        "sfml",
+      "sfml",
       "benchmark",
       "sdl2",
-      "glew"
+      "glew",
+      "fmt"
     ]
 }
