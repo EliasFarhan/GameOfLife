@@ -50,8 +50,12 @@ void CheckGlError(const char* file, int line)
         fmt::print("{}, in file: {} line: {}", errorLog, file, line);
     }
 }
+#define RELEASE
+#ifdef RELEASE
+#define glCheckError() void
+#else
 #define glCheckError() CheckGlError(__FILE__, __LINE__)
-
+#endif
 constexpr auto computeShaderContent = R"(#version 430 core
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
@@ -90,6 +94,8 @@ void main()
 }
 )";
 
+//#define COPY_BACK
+#ifdef COPY_BACK
 constexpr auto copyBackShaderContent = R"(#version 430 core
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
@@ -104,7 +110,7 @@ void main()
     imageStore(imgOutput, pixel_coords, pixel);
 }
 )";
-
+#endif
 constexpr auto fragmentShaderContent = R"(#version 330 core
 out vec4 FragColor;
 
@@ -206,7 +212,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
     }
     glDeleteShader(computeShader);
 
-#define COPY_BACK
 #ifdef COPY_BACK
     //Copy Shader
     const auto copyShader = glCreateShader(GL_COMPUTE_SHADER);
@@ -414,6 +419,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
     glDeleteVertexArrays(1, &VAO);
     glDeleteTextures(1, &previousTexture);
     glDeleteTextures(1, &currentTexture);
+
+    glCheckError();
 
     SDL_GL_DeleteContext(glRenderContext_);
 
